@@ -40,7 +40,8 @@ const getItemPrice = async () => {
 const getItemPrices = async(itemID, dcName) => {
 
     applyPrivateKey()
-    let res = await xiv.market.get(itemID, {dc:dcName, max_history:"7"});
+    //, max_history:"7"
+    let res = await xiv.market.get(itemID, {dc:dcName});
     console.log(res);
     return res;
 };
@@ -48,7 +49,8 @@ const getItemPrices = async(itemID, dcName) => {
 const getItemPricesByServer = async(itemID, serverName)=> {
 
     applyPrivateKey()
-    let res = await xiv.market.get(itemID, {server:serverName, max_history:"7"});
+    //,max_history:"7"
+    let res = await xiv.market.get(itemID, {server:serverName});
     console.log(res);
     return res;
 }
@@ -68,7 +70,6 @@ const getDataCenterList = async() => {
     console.log(result);
     return result;
 }
-
 
 function applyPrivateKey(){
     db.findOne({ current: 0 }, function(err, doc) {  

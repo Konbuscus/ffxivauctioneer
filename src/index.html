@@ -242,13 +242,19 @@
 
                 var historyData = [];
                 var timestampData = [];
-                itemInfo[i].Prices.sort((a, b) => (a.Added > b.Added) ? 1 : -1) 
+                var isOnSale = itemInfo[i].Prices.length != 0;
+                
                 itemInfo[i].History.sort((a, b) => (a.Added > b.Added) ? 1 : -1)
+                var finalData = isOnSale ? itemInfo[i].History.concat(itemInfo[i].Prices) : itemInfo[i].History;
 
-                var finalData = itemInfo[i].History.concat(itemInfo[i].Prices);
                 finalData.forEach(function(element){
                     historyData.push(element.PricePerUnit);
                     timestampData.push(new Date(element.Added * 1000).toLocaleString());
+
+                    if(!isOnSale){
+                        historyData.push(0);
+                        timestampData.push(Date(Date.now())).toLocaleString();
+                    }
                 });
                 data.labels = timestampData;
                 data.datasets.push({
