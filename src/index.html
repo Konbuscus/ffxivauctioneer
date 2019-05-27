@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>FF XIV Auctioneer v.1.0.0 @Konbuscus</title>
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="css/index.css">
+
+ <!-- jQuery CDN - Slim version (=without AJAX) -->
+ <script>let $ = require('jquery');</script>
+ <script>require('popper.js');</script>
+ <script>require('bootstrap');</script>
+ <script src="js/xivapi/xivapi.js"></script>
+ 
+ 
+
+
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- Sidebar  -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h3>FF XIV Auctioneer</h3>
+            </div>
+
+            <ul class="list-unstyled components">
+                <p class="startingPoint">Items categories</p>
+            </ul>
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="content">
+
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <div class="container-fluid">
+
+                    <button type="button" id="sidebarCollapse" class="btn btn-dark">
+                        <i class="fas fa-align-left"></i>
+                        <span>Hide menu</span>
+                    </button>
+
+                </div>
+            </nav>
+            <div class="items-details">
+
+                    <div class="line"></div>
+                    <h2 class="categoryTitle"></h2>
+                    <div class="container row">
+                        <div class="col col-lg-3">
+                            <table>
+                                <tbody class="items-container">
+    
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-9 elfamosochart">
+                                
+                            </div>
+                    </div>
+                    
+            </div>
+            
+        </div>
+    </div>
+
+   
+
+    <script type="text/javascript">
+    var Chart = require('chart.js');
+    var dc = "";
+    var itemid = "";
+    var itemname = "";
+
+        $(document).ready(function () {
+            //Chargement des catégories ...
+            
+            popDataCenter();
+            LoadSideBar();
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+                var buttonSpan = $(this).find("span");
+                if($("#sidebar").hasClass("active")){
+                    $(buttonSpan).text("Display menu");
+                }else{
+                    $(buttonSpan).text("Hide menu");
+                }
+            });
+            $("table tbody tr").on("click", function(){
+                //GenerateChart(this.id, this.value);
+            });
+        });
+
+
+
+         async function LoadSideBar(){
+
+            var categoriesArray = await getCategories();
+            var startingPoint = document.querySelector("p.startingPoint");
+
+            for(var i = 0; i < categoriesArray.length; i++){
+                
+                var category = categoriesArray[i];
+                //var itemsCategory = await getItemsByCategory(category.ID);
+
+                var cateogryMinus = categoriesArray[i-1];
+                //Adding entry in menu
+                var iterateHtml = $("<li id='"+category.ID+"'> <a href='#"+category.ID+"Submenu' data-toggle='collpse' id='"+category.ID+"' class='dropdown-toggle' onclick='LoadItemList(this.id)'>" + category.Name_en + " <img src='"+category.Icon+"' /> </a> <ul class='collapse list-unstyled' id='"+category.Name_en+"Submenu'> </ul></li>");
+                
+                //First entry after the starting point, other after the category index -1
+                if(i == 0){
+                    $(iterateHtml).insertAfter($(startingPoint));
+                }else{
+                    var previousEntry = document.querySelector("li[id='"+ cateogryMinus.ID +"']");
+                    $(iterateHtml).insertAfter($(previousEntry));
+                }
+            }
+        }
+
+         async function LoadItemList(categoryID){
+            
+            
+            $("li").removeClass("active");
+            var clickedElement = document.querySelector("a[id='"+categoryID+"']").parentElement;
+            $(clickedElement).addClass("active");
+            const items = await getItemsByCategory(categoryID);
+            var divToLoad = $("table tbody.items-container");
+            $(divToLoad).html("");
+            for(var i = 0; i < items.length; i++){
+                var itemHtml = $("<tr onclick='GenerateChart(this.id, this.children[0].innerHTML)' id='"+items[i].ID+"'><td>"+items[i].Name+"</td><td><img src='"+items[i].Icon+"'/></td> </tr>");
+                $(itemHtml).appendTo($(divToLoad));
+            }
+            //To the top
+            $(window).scrollTop(0);
+        }
+
+        async function GenerateChart(itemID, itemName){
+
+            var dcName = dc;
+            itemid = itemID;
+            itemname = itemName;
+            $("canvas").remove();
+            $("div.elfamosochart").append("<canvas id='chart' width='800' height='600'> </canvas>")
+            var chart = document.getElementById("chart").getContext("2d");
+            
+            //Getting item info
+            var itemInfo = await getItemPrices(itemID, dcName);
+            var data = dataProcessing(itemInfo);
+            var options = {
+                title: {
+            display: true,
+            text: 'History prices of item ' + itemName + ' on Datacenter : ' + dcName + ""
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+            
+        }
+            var zChart = new Chart(chart,{type:"line", data: data,options});
+        }
+
+
+
+        function dataProcessing(itemInfo){
+            
+            var data = {
+                labels: [],
+                datasets:[]
+            };
+
+            for(var i in itemInfo){
+
+                var historyData = [];
+                var timestampData = [];
+                itemInfo[i].History.forEach(function(element){
+                    historyData.push(element.PricePerUnit);
+                    timestampData.push(new Date(element.Added * 1000).toLocaleString());
+                });
+
+                data.labels = timestampData;
+                data.datasets.push({
+
+                    label:i,
+                    backgroundColor: random_rgba(),
+                    data: historyData
+
+                });
+
+            }
+            return data;
+            
+        }
+
+    function random_rgba() {
+    var o = Math.round, r = Math.random, s = 255;
+    return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + r().toFixed(1) + ')';
+    }
+
+    async function popDataCenter(){
+
+        var whereToInsert = $("button#sidebarCollapse");
+        var datacenters = await getDataCenterList();
+
+        for(var i = 0; i < datacenters.length; i++){
+
+            var html = $("<button id='"+datacenters[i]+"' class='btn btn-dark' onclick='applyDatacenter(this.id)'>"+datacenters[i]+"</button>");
+            $(html).insertAfter($(whereToInsert));
+        }
+    }
+
+    function applyDatacenter(dcName){
+        dc = dcName;
+        //Reload chart if already here
+        var currChart = document.getElementById("chart");
+        if(currChart != undefined){
+            GenerateChart(itemid, itemname);
+        }
+    }
+
+    </script>
+
+</body>
+
+</html>
