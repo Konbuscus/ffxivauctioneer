@@ -40,7 +40,7 @@ const getItemPrice = async () => {
 const getItemPrices = async(itemID, dcName) => {
 
     applyPrivateKey()
-    let res = await xiv.market.get(itemID, {dc:dcName, max_history:"15"});
+    let res = await xiv.market.get(itemID, {dc:dcName, max_history:"7"});
     console.log(res);
     return res;
 };
@@ -48,7 +48,7 @@ const getItemPrices = async(itemID, dcName) => {
 const getItemPricesByServer = async(itemID, serverName)=> {
 
     applyPrivateKey()
-    let res = await xiv.market.get(itemID, {server:serverName, max_history:"15"});
+    let res = await xiv.market.get(itemID, {server:serverName, max_history:"7"});
     console.log(res);
     return res;
 }
