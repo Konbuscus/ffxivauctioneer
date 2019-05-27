@@ -224,8 +224,7 @@
                         beginAtZero: true,
                     }
                 }],
-            
-            },
+                },
         }
             var zChart = new Chart(chart,{type:"line", data: data,options});
         }
@@ -243,6 +242,7 @@
 
                 var historyData = [];
                 var timestampData = [];
+                itemInfo[i].History.concat(itemInfo[i].Prices);
                 itemInfo[i].History.sort((a, b) => (a.Added > b.Added) ? 1 : -1)
                 itemInfo[i].History.forEach(function(element){
                     historyData.push(element.PricePerUnit);
