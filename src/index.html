@@ -214,18 +214,18 @@
             var itemInfo = await getItemPrices(itemID, dcName);
             var data = dataProcessing(itemInfo);
             var options = {
-                title: {
+            title: {
             display: true,
             text: 'History prices of item ' + itemName + ' on Datacenter : ' + dcName + ""
             },
             scales: {
                 yAxes: [{
                     ticks: {
-                        beginAtZero: true
+                        beginAtZero: true,
                     }
-                }]
-            },
+                }],
             
+            },
         }
             var zChart = new Chart(chart,{type:"line", data: data,options});
         }
@@ -243,11 +243,11 @@
 
                 var historyData = [];
                 var timestampData = [];
+                itemInfo[i].History.sort((a, b) => (a.Added > b.Added) ? 1 : -1)
                 itemInfo[i].History.forEach(function(element){
                     historyData.push(element.PricePerUnit);
                     timestampData.push(new Date(element.Added * 1000).toLocaleString());
                 });
-
                 data.labels = timestampData;
                 data.datasets.push({
 
