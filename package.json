@@ -27,6 +27,7 @@
     "chart.js": "^2.8.0",
     "cookies-js": "^1.2.3",
     "jquery": "^3.4.1",
+    "nedb": "^1.8.0",
     "popper.js": "^1.15.0",
     "xivapi-js": "^0.2.4"
   },

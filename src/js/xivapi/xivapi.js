@@ -1,10 +1,14 @@
 const XIVAPI = require('xivapi-js');
+
+
 const xiv = new XIVAPI({
     language:"en",
+    privateKey:null
 });
 
 const getCategories = async() =>{
     
+    applyPrivateKey()
     let res = await xiv.market.categories();
     res.sort();
     return res;
@@ -13,6 +17,7 @@ const getCategories = async() =>{
 
 const getItemsByCategory = async(categoryID) =>{
 
+    applyPrivateKey()
     let res = await xiv.search({indexes:"item", filters:"ItemSearchCategory.ID=" + categoryID})
     console.log(res.Results);
     return res.Results;
@@ -34,6 +39,7 @@ const getItemPrice = async () => {
 
 const getItemPrices = async(itemID, dcName) => {
 
+    applyPrivateKey()
     let res = await xiv.market.get(itemID, {dc:dcName, max_history:"15"});
     console.log(res);
     return res;
@@ -41,6 +47,7 @@ const getItemPrices = async(itemID, dcName) => {
 
 const getItemPricesByServer = async(itemID, serverName)=> {
 
+    applyPrivateKey()
     let res = await xiv.market.get(itemID, {server:serverName, max_history:"15"});
     console.log(res);
     return res;
@@ -49,6 +56,7 @@ const getItemPricesByServer = async(itemID, serverName)=> {
 
 const getDataCenterList = async() => {
 
+    applyPrivateKey()
     let res = await xiv.data.get("servers", "dc");
     //console.log(res);
     var result = [];
@@ -59,6 +67,13 @@ const getDataCenterList = async() => {
     }
     console.log(result);
     return result;
+}
+
+
+function applyPrivateKey(){
+    db.findOne({ current: 0 }, function(err, doc) {  
+        xiv.globalParams.privateKey = window.apiKey;
+    });
 }
 
 

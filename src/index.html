@@ -10,6 +10,7 @@
 
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="css/index.css">
 
@@ -42,11 +43,14 @@
 
             <nav class="navbar navbar-expand-lg navbar-dark">
                 <div class="container-fluid">
-
+                    
                     <button type="button" id="sidebarCollapse" class="btn btn-dark">
-                        <i class="fas fa-align-left"></i>
                         <span>Hide menu</span>
                     </button>
+                    <button type="button" id="btnApiKey" class="btn btn-dark">
+                            <i class="fas fa-key"></i>
+                            <span></span>
+                        </button>
 
                 </div>
             </nav>
@@ -72,17 +76,49 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h5 class="modal-title w-100 font-weight-bold">Enter a valid API KEY</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <i class="fas fa-envelope prefix grey-text"></i>
+          <input type="text" id="apiKey" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="apiKey"><a target="_blank" href="https://xivapi.com">Need API KEY ?</a></label>
+        </div>
+        <button id="validApi" class="btn btn-dark">SAVE</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
    
 
     <script type="text/javascript">
     var Chart = require('chart.js');
+    var Datastore = require('nedb'), db = new Datastore({ filename: 'src/main.db', autoload: true });
+    // You can issue commands right away
+    var apiKey;
     var dc = "";
     var itemid = "";
     var itemname = "";
 
         $(document).ready(function () {
-            //Chargement des catégories ...
             
+            $("#modal").modal("show");
+
+            //Chargement des catégories ...
+            // db.find({}, function (err, docs) {
+            //     if(docs.length == 0){
+            //     }
+            // });            
             popDataCenter();
             LoadSideBar();
             $('#sidebarCollapse').on('click', function () {
@@ -94,9 +130,31 @@
                     $(buttonSpan).text("Hide menu");
                 }
             });
-            $("table tbody tr").on("click", function(){
-                //GenerateChart(this.id, this.value);
+
+            $("#validApi").on("click", function(){
+                var key = $("#apiKey").val();
+                apiKey = key;
+                doc = {
+                    apiKey: key,
+                    current: 0
+                };
+                db.remove({}, { multi: true }, function(err, doc) {  
+                console.log('Deleted', doc);
+                });
+                db.insert(doc, function (err, newDoc) {   // Callback is optional
+                // newDoc is the newly inserted document, including its _id
+                // newDoc has no key called notToBeSaved since its value was undefined
+                });
+                if(apiKey != ""){
+                    $("button").attr("disabled", false);
+                }
+                $("#modal").modal("hide");
             });
+
+            $("#btnApiKey").on("click", function(){
+                $("#modal").modal("show");
+            });
+            
         });
 
 
@@ -210,12 +268,12 @@
 
     async function popDataCenter(){
 
-        var whereToInsert = $("button#sidebarCollapse");
+        var whereToInsert = $("button#btnApiKey");
         var datacenters = await getDataCenterList();
 
         for(var i = 0; i < datacenters.length; i++){
 
-            var html = $("<button id='"+datacenters[i]+"' class='btn btn-dark' onclick='applyDatacenter(this.id)'>"+datacenters[i]+"</button>");
+            var html = $("<button id='"+datacenters[i]+"' class='btn btn-dark' disabled onclick='applyDatacenter(this.id)'>"+datacenters[i]+"</button>");
             $(html).insertAfter($(whereToInsert));
         }
     }

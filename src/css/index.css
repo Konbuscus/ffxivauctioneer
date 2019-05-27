@@ -179,3 +179,13 @@ td{
         display: none;
     }
 }
+
+div.modal-content{
+
+    background:rgb(39, 40, 43)
+
+}
+
+h5, label{
+    color :#fff
+}
