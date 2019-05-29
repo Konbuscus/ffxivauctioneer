@@ -67,22 +67,6 @@ const getItemPricesByServer = async(itemID, serverName)=> {
     return res;
 }
 
-
-const getDataCenterList = async() => {
-
-    applyPrivateKey()
-    let res = await xiv.data.get("servers", "dc");
-    //console.log(res);
-    var result = [];
-    for(var i in res){
-        if(i !== "Url" && i!== "Icon"){
-            result.push(i);
-        }
-    }
-    console.log(result);
-    return result;
-}
-
 const getSellableItems = async(dcName) => {
     $.get('https://xivapi.com/market/ids').done(function(data){
         console.log(data);

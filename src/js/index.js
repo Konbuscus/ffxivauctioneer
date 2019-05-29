@@ -152,10 +152,10 @@ function dataProcessing(itemInfo){
             historyData.push(element.PricePerUnit);
             timestampData.push(new Date(element.Added * 1000).toLocaleString());
 
-            if(!isOnSale){
-                historyData.push(0);
-                timestampData.push(Date(Date.now())).toLocaleString();
-            }
+            // if(!isOnSale){
+            //     historyData.push(0);
+            //     timestampData.push(Date(Date.now())).toLocaleString();
+            // }
         });
         data.labels = timestampData;
         data.datasets.push({
@@ -179,14 +179,34 @@ return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + r().toFixed(
 async function popDataCenter(){
 
 var whereToInsert = $("button#btnApiKey");
-var datacenters = await getDataCenterList();
+var datacenters = [];
+$.getJSON("http://is.xivup.com/indexdata",function(data){
 
-    for(var i = 0; i < datacenters.length; i++){
-
-        var html = $("<button id='"+datacenters[i]+"' class='btn btn-dark' disabled onclick='applyDatacenter(this.id)'>"+datacenters[i]+"</button>");
-        $(html).insertAfter($(whereToInsert));
+    //var result = [];
+    for(var i in data.DCs){
+        if(i !== "logindc" && i!== "gatedc"){
+            datacenters.push({dc:i, status:data.DCs[i]});
+        }
     }
-}
+    for(var i = 0; i < datacenters.length; i++){
+        var dc = datacenters[i].dc;
+        var dcStatus = datacenters[i].status;
+
+        //icon with status 
+        var statusHtml = dcStatus == 1 ? "<i class='fas fa-check-circle'></i>" : "<i class='fas fa-times-circle'></i>";
+
+        var html = $("<button id='"+dc+"' class='btn btn-dark' disabled onclick='applyDatacenter(this.id)'>"+dc+"<br>" +statusHtml+ "</button>");
+        $(html).insertAfter($(whereToInsert));
+
+    }
+}  
+    
+    // for(var i = 0; i < datacenters.length; i++){
+
+    //     var html = $("<button id='"+datacenters[i]+"' class='btn btn-dark' disabled onclick='applyDatacenter(this.id)'>"+datacenters[i]+"</button>");
+    //     $(html).insertAfter($(whereToInsert));
+)}   // }
+
 
 function applyDatacenter(dcName){
 dc = dcName;
@@ -213,7 +233,8 @@ async function getSellableItemInformations(dcName){
 
 
 async function searchApi(value){
-
+      
+    $("li").removeClass("active");
     var infos = await searchThroughAPI(value);
     var divToLoad = $("table tbody.items-container");
     $(divToLoad).html("");
