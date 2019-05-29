@@ -189,3 +189,17 @@ var currChart = document.getElementById("chart");
         GenerateChart(itemid, itemname);
     }
 }
+
+async function getSellableItemInformations(dcName){
+
+    var itemsInfos = [];
+    let itemIds = await getSellableItems(dcName);
+    //TODO: trouver un moyen d'attendre que cette merde soit terminée.
+    for(const id in itemIds){
+        
+        let itemInfo = await getItemPrices(id, dcName);
+        console.log(itemInfo);
+        itemsInfos.push(itemInfo);
+    }
+    //console.log(itemsInfos);
+}
