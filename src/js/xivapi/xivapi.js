@@ -104,7 +104,7 @@ const searchThroughAPI = async(value) => {
             console.log(tmp);
             fullRes.push(tmp.Results);
         }
-        return fullRes;
+        return fullRes.flat();
     }
     console.log(res);
     return res.Results;
