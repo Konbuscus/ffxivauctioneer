@@ -2,13 +2,13 @@
 var Chart = require('chart.js');
 var Datastore = require('nedb'), db = new Datastore({ filename: 'src/main.db', autoload: true });
 // You can issue commands right away
-var apiKey;
+var apiKey = "d1e6e1d81a0b492d9e02d0f7f4408e08d2da128ea62d4395a08c772886706eea";
 var dc = "";
 var itemid = "";
 var itemname = "";
 
 function init(){
-
+    $("#apiKey").val(apiKey);
     $("#modal").modal("show");
     //Chargement des catégories ...
     // db.find({}, function (err, docs) {
@@ -101,7 +101,7 @@ async function GenerateChart(itemID, itemName){
     itemid = itemID;
     itemname = itemName;
     $("canvas").remove();
-    $("div.elfamosochart").append("<canvas id='chart' width='800' height='600'> </canvas>")
+    $("div.elfamosochart").append("<canvas id='chart' > </canvas>")
     var chart = document.getElementById("chart").getContext("2d");
     
     //Getting item info
