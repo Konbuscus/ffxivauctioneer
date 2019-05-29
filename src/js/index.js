@@ -51,6 +51,13 @@ function init(){
         $("#modal").modal("show");
     });
 
+    $("#btnSearch").on("click", function(){
+
+        var inputVal = $("#searchVal").val();
+        searchApi(inputVal);
+
+    });
+
 }
 
 
@@ -202,4 +209,18 @@ async function getSellableItemInformations(dcName){
         itemsInfos.push(itemInfo);
     }
     //console.log(itemsInfos);
+}
+
+
+async function searchApi(value){
+
+    var infos = await searchThroughAPI(value);
+    var divToLoad = $("table tbody.items-container");
+    $(divToLoad).html("");
+    for(var i = 0; i < infos.length; i++){
+        var itemHtml = $("<tr onclick='GenerateChart(this.id, this.children[0].innerHTML)' id='"+infos[i].ID+"'><td>"+infos[i].Name+"</td><td><img src='"+infos[i].Icon+"'/></td> </tr>");
+        $(itemHtml).appendTo($(divToLoad));
+    }
+    //To the top
+    $(window).scrollTop(0);
 }
