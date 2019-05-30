@@ -57,7 +57,10 @@ function init(){
         searchApi(inputVal);
 
     });
-
+    window.setInterval(function(){
+        //Refresh des status every min
+        refreshDCstatus();
+      }, 60000);
 }
 
 
@@ -189,13 +192,14 @@ $.getJSON("http://is.xivup.com/indexdata",function(data){
         }
     }
     for(var i = 0; i < datacenters.length; i++){
+        
         var dc = datacenters[i].dc;
         var dcStatus = datacenters[i].status;
 
         //icon with status 
         var statusHtml = dcStatus == 1 ? "<i class='fas fa-check-circle'></i>" : "<i class='fas fa-times-circle'></i>";
 
-        var html = $("<button id='"+dc+"' class='btn btn-dark' disabled onclick='applyDatacenter(this.id)'>"+dc+"<br>" +statusHtml+ "</button>");
+        var html = $("<button id='"+dc+"' class='btn btn-dark dcs' disabled onclick='applyDatacenter(this.id)'>"+dc+"<br>" +statusHtml+ "</button>");
         $(html).insertAfter($(whereToInsert));
 
     }
@@ -245,3 +249,45 @@ async function searchApi(value){
     //To the top
     $(window).scrollTop(0);
 }
+
+function refreshDCstatus(){
+
+    var dcs = [];
+    //Find all dcs and match them with the button
+    $.getJSON("http://is.xivup.com/indexdata", function(data){
+
+        for(var i  in  data.DCs){
+            if(i !== "logindc" && i!== "gatedc"){
+                dcs.push({dc:i, status:data.DCs[i]});
+            }
+        }
+        var unavailableStatus = "fas fa-times-circle";
+        var availableStatus = "fas fa-check-circle";
+        //Now we have all dcs status
+        var buttonDCs = $("button.dcs");
+        var sorted = $(buttonDCs).sort(SortById);
+
+        if(dcs.length != 0){
+
+            for(var i = 0; i < sorted.length; i++){
+
+                if(dcs[i].dc === $(sorted)[i].id){
+                    
+                    var statusHtml = dcs[i].status == 1 ? availableStatus : unavailableStatus
+                    var icon = $(buttonDCs)[i].children[1]; //Getting i tag
+                    $(icon).removeClass(unavailableStatus);
+                    $(icon).removeClass(availableStatus);
+                    $(icon).addClass(statusHtml);
+                }
+            }
+            
+        }
+
+    });
+
+}
+function SortById(a, b){
+    var aName = a.id.toLowerCase();
+    var bName = b.id.toLowerCase(); 
+    return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+  }
