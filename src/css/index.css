@@ -193,3 +193,11 @@ h5, label{
 img.logo{
     margin-left:2.5rem;
 }
+
+i.fa-check-circle{
+    color:green;
+}
+
+i.fa-times-circle{
+    color:red;
+}
