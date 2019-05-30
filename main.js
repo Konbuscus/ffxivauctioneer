@@ -11,9 +11,10 @@ function createWindow () {
     height: 1080,
     title: "FF XIV Auctioneer",
     icon: "res/ffxivauctioneer.icns",
+    //frame:false,
     webPreferences: {
       nodeIntegration: true,
-      //devTools:false
+      devTools:false
     }
   })
 
@@ -22,8 +23,8 @@ function createWindow () {
 
   // Open the DevTools.
   //win.setMenu(null);
- // win.webContents.openDevTools()
-  //win.setMenu(null);
+  //win.webContents.openDevTools()
+  win.setMenu(null);
   // Emitted when the window is closed.
   win.on('closed', () => {
     // Dereference the window object, usually you would store windows
