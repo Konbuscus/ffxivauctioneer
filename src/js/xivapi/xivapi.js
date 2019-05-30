@@ -77,10 +77,6 @@ const getSellableItems = async(dcName) => {
 
 const searchThroughAPI = async(value) => {
 
-    if(value === ""){
-        return;
-    }
-    
     var fullRes = [];
     applyPrivateKey();
     let res =  await xiv.search(value, {indexes:"item"});

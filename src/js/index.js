@@ -237,7 +237,10 @@ async function getSellableItemInformations(dcName){
 
 
 async function searchApi(value){
-      
+     
+    if(value === ""){
+        return;
+    }
     $("li").removeClass("active");
     var infos = await searchThroughAPI(value);
     var divToLoad = $("table tbody.items-container");
