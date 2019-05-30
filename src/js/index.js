@@ -2,21 +2,15 @@
 var Chart = require('chart.js');
 var Datastore = require('nedb'), db = new Datastore({ filename: 'src/main.db', autoload: true });
 // You can issue commands right away
-var apiKey = "d1e6e1d81a0b492d9e02d0f7f4408e08d2da128ea62d4395a08c772886706eea";
 var dc = "";
 var itemid = "";
 var itemname = "";
 
 function init(){
-    $("#apiKey").val(apiKey);
-    $("#modal").modal("show");
-    //Chargement des catégories ...
-    // db.find({}, function (err, docs) {
-    //     if(docs.length == 0){
-    //     }
-    // });            
+    
     popDataCenter();
     LoadSideBar();
+
     $('#sidebarCollapse').on('click', function () {
         $('#sidebar').toggleClass('active');
         var buttonSpan = $(this).find("span");
@@ -25,30 +19,6 @@ function init(){
         }else{
             $(buttonSpan).text("Hide menu");
         }
-    });
-
-    $("#validApi").on("click", function(){
-        var key = $("#apiKey").val();
-        apiKey = key;
-        doc = {
-            apiKey: key,
-            current: 0
-        };
-        db.remove({}, { multi: true }, function(err, doc) {  
-        console.log('Deleted', doc);
-        });
-        db.insert(doc, function (err, newDoc) {   // Callback is optional
-        // newDoc is the newly inserted document, including its _id
-        // newDoc has no key called notToBeSaved since its value was undefined
-        });
-        if(apiKey != ""){
-            $("button").attr("disabled", false);
-        }
-        $("#modal").modal("hide");
-    });
-
-    $("#btnApiKey").on("click", function(){
-        $("#modal").modal("show");
     });
 
     $("#btnSearch").on("click", function(){
@@ -72,10 +42,7 @@ async function LoadSideBar(){
     for(var i = 0; i < categoriesArray.length; i++){
         
         var category = categoriesArray[i];
-        //var itemsCategory = await getItemsByCategory(category.ID);
-
         var cateogryMinus = categoriesArray[i-1];
-        //Adding entry in menu
         var iterateHtml = $("<li id='"+category.ID+"'> <a href='#"+category.ID+"Submenu' data-toggle='collpse' id='"+category.ID+"' class='dropdown-toggle' onclick='LoadItemList(this.id)'>" + category.Name_en + " <img src='"+category.Icon+"' /> </a> <ul class='collapse list-unstyled' id='"+category.Name_en+"Submenu'> </ul></li>");
         
         //First entry after the starting point, other after the category index -1
@@ -154,12 +121,8 @@ function dataProcessing(itemInfo){
         finalData.forEach(function(element){
             historyData.push(element.PricePerUnit);
             timestampData.push(new Date(element.Added * 1000).toLocaleString());
-
-            // if(!isOnSale){
-            //     historyData.push(0);
-            //     timestampData.push(Date(Date.now())).toLocaleString();
-            // }
         });
+
         data.labels = timestampData;
         data.datasets.push({
 
@@ -175,41 +138,38 @@ function dataProcessing(itemInfo){
 }
 
 function random_rgba() {
-var o = Math.round, r = Math.random, s = 255;
-return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + r().toFixed(1) + ')';
+
+    var o = Math.round, r = Math.random, s = 255;
+    return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + r().toFixed(1) + ')';
 }
 
 async function popDataCenter(){
 
-var whereToInsert = $("button#btnApiKey");
-var datacenters = [];
-$.getJSON("http://is.xivup.com/indexdata",function(data){
+    var whereToInsert = $("button#sidebarCollapse");
+    var datacenters = [];
+    $.getJSON("http://is.xivup.com/indexdata",function(data){
 
-    //var result = [];
-    for(var i in data.DCs){
-        if(i !== "logindc" && i!== "gatedc"){
-            datacenters.push({dc:i, status:data.DCs[i]});
+        //var result = [];
+        for(var i in data.DCs){
+            if(i !== "logindc" && i!== "gatedc"){
+                datacenters.push({dc:i, status:data.DCs[i]});
+            }
         }
-    }
-    for(var i = 0; i < datacenters.length; i++){
-        
-        var dc = datacenters[i].dc;
-        var dcStatus = datacenters[i].status;
+        for(var i = 0; i < datacenters.length; i++){
+            
+            var dc = datacenters[i].dc;
+            var dcStatus = datacenters[i].status;
 
-        //icon with status 
-        var statusHtml = dcStatus == 1 ? "<i class='fas fa-check-circle'></i>" : "<i class='fas fa-times-circle'></i>";
+            //icon with status 
+            var statusHtml = dcStatus == 1 ? "<i class='fas fa-check-circle'></i>" : "<i class='fas fa-times-circle'></i>";
 
-        var html = $("<button id='"+dc+"' class='btn btn-dark dcs' disabled onclick='applyDatacenter(this.id)'>"+dc+"<br>" +statusHtml+ "</button>");
-        $(html).insertAfter($(whereToInsert));
+            var html = $("<button id='"+dc+"' class='btn btn-dark dcs' onclick='applyDatacenter(this.id)'>"+dc+"<br>" +statusHtml+ "</button>");
+            $(html).insertAfter($(whereToInsert));
 
-    }
-}  
+        }
+    }  
     
-    // for(var i = 0; i < datacenters.length; i++){
-
-    //     var html = $("<button id='"+datacenters[i]+"' class='btn btn-dark' disabled onclick='applyDatacenter(this.id)'>"+datacenters[i]+"</button>");
-    //     $(html).insertAfter($(whereToInsert));
-)}   // }
+)}   
 
 
 function applyDatacenter(dcName){
@@ -225,14 +185,11 @@ async function getSellableItemInformations(dcName){
 
     var itemsInfos = [];
     let itemIds = await getSellableItems(dcName);
-    //TODO: trouver un moyen d'attendre que cette merde soit terminée.
     for(const id in itemIds){
         
         let itemInfo = await getItemPrices(id, dcName);
-        console.log(itemInfo);
         itemsInfos.push(itemInfo);
     }
-    //console.log(itemsInfos);
 }
 
 
