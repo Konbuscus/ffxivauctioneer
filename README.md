@@ -1,6 +1,6 @@
 # FFXIVAuctioneer
 
-FFXIVAuctioneer is a Electron based app for dealing with items prices between all realms and datacenters in FF XIV.
+FFXIVAuctioneer is an Electron based app for dealing with items prices between all realms and datacenters in FF XIV.
 
 ## Preview
 
