@@ -13,7 +13,7 @@ You can access [releases](https://github.com/Konbuscus/ffxivauctioneer/releases)
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-Use the package manager [npm](https://nodejs.org/dist/v10.16.0/node-v10.16.0.pkg) to get the sources.
+Use the package manager [npm](https://nodejs.org/dist/v10.16.0/node-v10.16.0.pkg) to get the required packages.
 
 Clone the repo ,open a node terminal and type the following :
 ```bash
