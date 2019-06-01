@@ -2,6 +2,11 @@
 
 FFXIVAuctioneer is an Electron based app for dealing with items prices between all realms and datacenters in FF XIV.
 
+## Why should I use this instead of mogboard ?
+  You can do whatever you want. I just don't like mogboard.
+  I wanted to use this case as an electron practice app.
+  It saves me from going back and forth to the market boards 
+
 ## Features
 
 * Search items
@@ -15,32 +20,32 @@ FFXIVAuctioneer is an Electron based app for dealing with items prices between a
 
 ## OS Requirements
 
-  ## Windows
+  ### Windows
 
   Windows 7 and later are supported, older operating systems are not supported (and do not work).
   
-  ## Mac
+  ### Mac
 
   Only 64bit binaries are provided for OS X, and the minimum OS X version supported is OS X 10.9.
   
-  ## Linux
+  ### Linux
   
   Not yet
 
 ## Hardware
 
 
-  ## Windows
+  ### Windows
 
   An Intel Pentium 4 processor or later that's SSE2 capable
   512 MB of RAM
   
-  ## Mac
+  ### Mac
 
   An Intel processor that's 64-bit
   512 MB of RAM
   
-  ## Linux
+  ### Linux
 
   An Intel Pentium 4 processor or later that's SSE2 capable
 
