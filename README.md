@@ -18,19 +18,31 @@ FFXIVAuctioneer is an Electron based app for dealing with items prices between a
   ## Windows
 
   Windows 7 and later are supported, older operating systems are not supported (and do not work).
-  Both x86 and amd64 (x64) binaries are provided for Windows. Please note, the ARM version of Windows is not supported for              now.
   
   ## Mac
 
   Only 64bit binaries are provided for OS X, and the minimum OS X version supported is OS X 10.9.
   
   ## Linux
+  
+  Not yet
+
+## Hardware
 
 
-  Ubuntu 12.04 and later
-  Fedora 21
-  Debian 8
+  ## Windows
 
+  An Intel Pentium 4 processor or later that's SSE2 capable
+  512 MB of RAM
+  
+  ## Mac
+
+  An Intel processor that's 64-bit
+  512 MB of RAM
+  
+  ## Linux
+
+  An Intel Pentium 4 processor or later that's SSE2 capable
 
 ## Releases
 
