@@ -36,15 +36,14 @@
     "productName": "FF XIV Auctioneer",
     "win": {
       "target": "nsis",
-      "icon": "res/icon.ico"
+      "icon": "res/ffxivauctioneer.ico"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "installerIcon": "res/icon.ico",
-      "license": "LICENSE"
+      "installerIcon": "res/ffxivauctioneer.ico"
     },
     "mac": {
       "target": "dmg",
